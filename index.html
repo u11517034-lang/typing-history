@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>英打遊戲開發歷程網站</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        h1 { color: #1a365d; margin-bottom: 10px; }
+        p.subtitle { color: #4a5568; font-size: 1.1rem; }
+        
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+        }
+        .card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 24px;
+            text-decoration: none;
+            color: inherit;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+        .card h2 { color: #2b6cb0; margin-top: 0; font-size: 1.3rem; }
+        .card p { color: #718096; font-size: 0.95rem; }
+        .tag {
+            display: inline-block;
+            background: #edf2f7;
+            color: #2b6cb0;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            margin-top: 15px;
+            align-self: flex-start;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>英打遊戲開發歷程</h1>
+        <p class="subtitle">記錄從零開始打造靜態網頁英打遊戲的過程</p>
+    </header>
+
+    <div class="card-grid">
+        <!-- 卡片 1：連結至任務一獨立網址 -->
+        <a href="file:///Users/chien/Desktop/%E5%A4%A7%E5%AD%B8/%E6%95%B8%E4%BD%8D%E7%A7%91%E6%8A%80%E6%A6%82%E8%AB%96/my-typing-work/typing-v1/index.html" target="_blank" class="card">
+            <div>
+                <h2>版本一：起步預告</h2>
+                <p>只有簡單標題與按鈕，練習第一個 GitHub Pages 網站發布與部署。</p>
+            </div>
+            <span class="tag">開啟版本一 ↗</span>
+        </a>
+
+        <!-- 卡片 2：連結至任務二獨立網址 -->
+        <a href="file:///Users/chien/Desktop/%E5%A4%A7%E5%AD%B8/%E6%95%B8%E4%BD%8D%E7%A7%91%E6%8A%80%E6%A6%82%E8%AB%96/my-typing-work/typing-v2/index.html" target="_blank" class="card">
+            <div>
+                <h2>版本二：多媒體素材</h2>
+                <p>加入外部鍵盤圖片與音效檔，練習 assets 相對路徑配置。</p>
+            </div>
+            <span class="tag">開啟版本二 ↗</span>
+        </a>
+
+        <!-- 卡片 3：連結至同資料夾的 coming-soon.html -->
+        <a href="coming-soon.html" class="card">
+            <div>
+                <h2>版本三：ASDF 基礎練習</h2>
+                <p>預計開發左手基本鍵提示與即時按鍵回饋機制。</p>
+            </div>
+            <span class="tag">查看預告頁 →</span>
+        </a>
+    </div>
+
+</body>
+</html>
