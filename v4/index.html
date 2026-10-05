@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>英打遊戲版本四 - 十鍵掉落字母</title>
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; background: #f0f4f8; color: #2d3748; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
+        .game-container { background: white; width: 100%; max-width: 600px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); padding: 25px; text-align: center; position: relative; overflow: hidden; }
+        h1 { margin-top: 0; color: #2b6cb0; font-size: 1.8rem; }
+        .controls { background: #edf2f7; padding: 15px; border-radius: 10px; margin-bottom: 15px; display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; align-items: center; font-size: 0.95rem; }
+        .game-area { width: 100%; height: 280px; background: #1a202c; border-radius: 12px; position: relative; overflow: hidden; margin-bottom: 15px; border: 2px solid #2d3748; }
+        .falling-char { position: absolute; font-size: 2.5rem; font-weight: bold; color: #48bb78; background: rgba(255,255,255,0.1); width: 50px; height: 50px; line-height: 50px; border-radius: 8px; border: 2px solid #48bb78; left: 50%; transform: translateX(-50%); top: 0; }
+        .keyboard { display: flex; justify-content: center; gap: 6px; flex-wrap: wrap; margin-bottom: 15px; }
+        .key { width: 42px; height: 45px; border: 1px solid #cbd5e0; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: bold; background: #edf2f7; color: #4a5568; }
+        .key.active { background: #e53e3e; color: white; border-color: #c53030; transform: scale(1.05); }
+        .stats { display: flex; justify-content: space-around; font-weight: bold; font-size: 1.1rem; color: #4a5568; margin-bottom: 15px; }
+        button { padding: 10px 24px; font-size: 1rem; font-weight: bold; border: none; border-radius: 6px; cursor: pointer; background: #319795; color: white; margin: 0 5px; }
+        button:hover { background: #2c7a7b; }
+        button.pause { background: #dd6b20; }
+        a.back { display: inline-block; margin-top: 10px; color: #2b6cb0; text-decoration: none; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div class="game-container">
+        <h1>英打遊戲 v4：十鍵掉落字母</h1>
+
+        <div class="controls">
+            <label>落地時間：<span id="speed-val">12</span> 秒
+                <input type="range" id="speed-slider" min="3" max="14" value="12">
+            </label>
+            <label>
+                <input type="checkbox" id="accel-check"> 漸進加速 (每答對3題縮短1秒)
+            </label>
+        </div>
+
+        <div class="stats">
+            <div>答對：<span id="score">0</span></div>
+            <div>落地：<span id="missed">0</span></div>
+            <div>剩餘：<span id="remaining">10</span> 題</div>
+        </div>
+
+        <div class="game-area" id="game-area">
+            <div class="falling-char" id="char-node" style="display:none;">A</div>
+        </div>
+
+        <div class="keyboard">
+            <div class="key" id="k-A">A</div><div class="key" id="k-S">S</div><div class="key" id="k-D">D</div><div class="key" id="k-F">F</div><div class="key" id="k-G">G</div>
+            <div class="key" id="k-H">H</div><div class="key" id="k-J">J</div><div class="key" id="k-K">K</div><div class="key" id="k-L">L</div><div class="key" id="k-SEMI">;</div>
+        </div>
+
+        <div>
+            <button id="start-btn" onclick="startGame()">開始遊戲</button>
+            <button id="pause-btn" class="pause" onclick="togglePause()" style="display:none;">暫停</button>
+        </div>
+
+        <a href="../index.html" class="back">← 回到開發歷程首頁</a>
+    </div>
+
+    <script>
+        const charSet = ['A','S','D','F','G','H','J','K','L',';'];
+        let score = 0, missed = 0, totalQuestions = 0;
+        let isPlaying = false, isPaused = false;
+        let currentChar = '', animFrame = null, startTime = null;
+        let currentDuration = 12000, baseDuration = 12000;
+
+        const slider = document.getElementById('speed-slider');
+        const speedVal = document.getElementById('speed-val');
+        const charNode = document.getElementById('char-node');
+        const gameArea = document.getElementById('game-area');
+
+        slider.addEventListener('input', (e) => {
+            speedVal.textContent = e.target.value;
+            baseDuration = e.target.value * 1000;
+        });
+
+        function startGame() {
+            score = 0; missed = 0; totalQuestions = 10;
+            isPlaying = true; isPaused = false;
+            baseDuration = slider.value * 1000;
+            updateStats();
+            document.getElementById('start-btn').style.display = 'none';
+            document.getElementById('pause-btn').style.display = 'inline-block';
+            nextTurn();
+        }
+
+        function updateStats() {
+            document.getElementById('score').textContent = score;
+            document.getElementById('missed').textContent = missed;
+            document.getElementById('remaining').textContent = totalQuestions;
+        }
+
+        function nextTurn() {
+            if (totalQuestions <= 0) {
+                endGame(); return;
+            }
+            clearHighlights();
+            currentChar = charSet[Math.floor(Math.random() * charSet.length)];
+            charNode.textContent = currentChar;
+            charNode.style.display = 'block';
+            
+            highlightKey(currentChar);
+
+            // 計算加速度
+            let duration = baseDuration;
+            if (document.getElementById('accel-check').checked) {
+                let speedUp = Math.floor(score / 3) * 1000;
+                duration = Math.max(3000, baseDuration - speedUp);
+            }
+            currentDuration = duration;
+
+            startTime = performance.now();
+            animateChar();
+        }
+
+        function animateChar() {
+            if (!isPlaying || isPaused) return;
+            let elapsed = performance.now() - startTime;
+            let progress = elapsed / currentDuration;
+
+            if (progress >= 1) {
+                missed++;
+                totalQuestions--;
+                updateStats();
+                nextTurn();
+            } else {
+                let maxTop = gameArea.clientHeight - 60;
+                charNode.style.top = (progress * maxTop) + 'px';
+                animFrame = requestAnimationFrame(animateChar);
+            }
+        }
+
+        function togglePause() {
+            if (!isPlaying) return;
+            isPaused = !isPaused;
+            document.getElementById('pause-btn').textContent = isPaused ? '繼續' : '暫停';
+            if (!isPaused) {
+                startTime = performance.now() - (charNode.offsetTop / (gameArea.clientHeight - 60) * currentDuration);
+                animateChar();
+            }
+        }
+
+        function highlightKey(c) {
+            let keyId = c === ';' ? 'k-SEMI' : `k-${c}`;
+            let el = document.getElementById(keyId);
+            if (el) el.classList.add('active');
+        }
+
+        function clearHighlights() {
+            document.querySelectorAll('.key').forEach(k => k.classList.remove('active'));
+        }
+
+        function endGame() {
+            isPlaying = false;
+            charNode.style.display = 'none';
+            alert(`一回合十題結束！\n答對：${score} 題\n落地：${missed} 題`);
+            document.getElementById('start-btn').style.display = 'inline-block';
+            document.getElementById('pause-btn').style.display = 'none';
+        }
+
+        window.addEventListener('keydown', (e) => {
+            if (!isPlaying || isPaused) return;
+            let pressed = e.key.toUpperCase();
+            if (pressed === currentChar) {
+                cancelAnimationFrame(animFrame);
+                score++;
+                totalQuestions--;
+                updateStats();
+                nextTurn();
+            }
+        });
+    </script>
+</body>
+</html>
