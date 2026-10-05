@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>英打遊戲開發歷程網站</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #f8f9fa; color: #333; max-width: 900px; margin: 0 auto; padding: 40px 20px; line-height: 1.6; }
+        header { text-align: center; margin-bottom: 40px; }
+        h1 { color: #1a365d; margin-bottom: 10px; }
+        .subtitle { color: #4a5568; font-size: 1.1rem; }
+        .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
+        .card { background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px; text-decoration: none; color: inherit; box-shadow: 0 2px 8px rgba(0,0,0,0.05); transition: transform 0.2s, box-shadow 0.2s; display: flex; flex-direction: column; justify-content: space-between; }
+        .card:hover { transform: translateY(-4px); box-shadow: 0 8px 16px rgba(0,0,0,0.1); }
+        .card h2 { color: #2b6cb0; margin-top: 0; font-size: 1.25rem; }
+        .card p { color: #718096; font-size: 0.9rem; }
+        .tag { display: inline-block; background: #edf2f7; color: #2b6cb0; padding: 4px 10px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; margin-top: 15px; align-self: flex-start; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>英打遊戲開發歷程</h1>
+        <p class="subtitle">記錄從零開始打造靜態網頁英打遊戲的過程</p>
+    </header>
+
+    <div class="card-grid">
+        <a href="https://u11517034-lang.github.io/typing-v1/" target="_blank" class="card">
+            <div>
+                <h2>版本一：起步預告</h2>
+                <p>只有簡單標題與按鈕，練習第一個 GitHub Pages 發布。</p>
+            </div>
+            <span class="tag">開啟版本一 ↗</span>
+        </a>
+
+        <a href="https://u11517034-lang.github.io/typing-v2/" target="_blank" class="card">
+            <div>
+                <h2>版本二：多媒體素材</h2>
+                <p>加入外部鍵盤圖片與音效檔，練習 assets 相對路徑。</p>
+            </div>
+            <span class="tag">開啟版本二 ↗</span>
+        </a>
+
+        <a href="v3/index.html" class="card">
+            <div>
+                <h2>版本三：ASDF 練習</h2>
+                <p>左手基本鍵提示、高亮與即時得分機制。</p>
+            </div>
+            <span class="tag">開啟版本三 →</span>
+        </a>
+
+        <a href="v4/index.html" class="card">
+            <div>
+                <h2>版本四：十鍵掉落</h2>
+                <p>A~; 十鍵掉落字母，含落地計數與漸進加速調整。</p>
+            </div>
+            <span class="tag">開啟版本四 →</span>
+        </a>
+    </div>
+
+</body>
+</html>
